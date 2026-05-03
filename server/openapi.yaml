@@ -1,0 +1,77 @@
+openapi: 3.0.0
+info:
+  title: Bookder API
+  version: 1.0.0
+  description: API para gestión de libros en Bookder
+servers:
+  - url: http://localhost:3000/api
+paths:
+  /books:
+    get:
+      summary: Obtener todos los libros
+      responses:
+        '200':
+          description: Lista de libros
+    post:
+      summary: Crear un libro
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '201':
+          description: Libro creado
+  /books/{id}:
+    get:
+      summary: Obtener libro por ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Libro encontrado
+        '404':
+          description: Libro no encontrado
+    delete:
+      summary: Eliminar libro
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Libro eliminado
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        author:
+          type: string
+        genre:
+          type: string
+        status:
+          type: string
+        city:
+          type: string
+        disponible:
+          type: boolean
+        price:
+          type: number
+        cover:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
