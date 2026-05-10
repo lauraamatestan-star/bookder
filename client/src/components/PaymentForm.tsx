@@ -1,13 +1,12 @@
+
 import { useState } from 'react';
-import Cards from 'react-credit-cards';
-import 'react-credit-cards/es/styles-compiled.css';
+
 
 export function PaymentForm({ onPay }: { onPay: (data: any) => void }) {
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvc, setCvc] = useState('');
-  const [focus, setFocus] = useState('');
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,13 +20,6 @@ export function PaymentForm({ onPay }: { onPay: (data: any) => void }) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <Cards
-        number={number}
-        name={name}
-        expiry={expiry}
-        cvc={cvc}
-        focused={focus}
-      />
       <form onSubmit={handleSubmit} className="mt-6 w-80 bg-white p-6 rounded shadow-md">
         <input
           type="tel"
@@ -35,7 +27,6 @@ export function PaymentForm({ onPay }: { onPay: (data: any) => void }) {
           placeholder="Número de tarjeta"
           value={number}
           onChange={e => setNumber(e.target.value)}
-          onFocus={e => setFocus('number')}
           className="w-full px-3 py-2 border rounded mb-4"
           required
         />
@@ -45,7 +36,6 @@ export function PaymentForm({ onPay }: { onPay: (data: any) => void }) {
           placeholder="Nombre en la tarjeta"
           value={name}
           onChange={e => setName(e.target.value)}
-          onFocus={e => setFocus('name')}
           className="w-full px-3 py-2 border rounded mb-4"
           required
         />
@@ -56,7 +46,6 @@ export function PaymentForm({ onPay }: { onPay: (data: any) => void }) {
             placeholder="MM/AA"
             value={expiry}
             onChange={e => setExpiry(e.target.value)}
-            onFocus={e => setFocus('expiry')}
             className="w-1/2 px-3 py-2 border rounded"
             required
           />
@@ -66,7 +55,6 @@ export function PaymentForm({ onPay }: { onPay: (data: any) => void }) {
             placeholder="CVC"
             value={cvc}
             onChange={e => setCvc(e.target.value)}
-            onFocus={e => setFocus('cvc')}
             className="w-1/2 px-3 py-2 border rounded"
             required
           />

@@ -15,7 +15,7 @@ interface FormErrors {
 }
 
 export function UploadBook() {
-  const { addBook } = useBooks();
+  const { addBook, refetch } = useBooks();
   const [formData, setFormData] = useState<CreateBookRequest>({
     title: '',
     author: '',
@@ -66,12 +66,14 @@ export function UploadBook() {
     if (!validate()) return;
     
     setIsSubmitting(true);
-    const result = await addBook(formData);
+    // Normalizar ciudad a 'Madrid' (primera mayúscula, resto minúsculas)
+    const ciudadNormalizada = formData.city.trim().toLowerCase() === 'madrid' ? 'Madrid' : formData.city.charAt(0).toUpperCase() + formData.city.slice(1).toLowerCase();
+    const result = await addBook({ ...formData, city: ciudadNormalizada });
     setIsSubmitting(false);
-    
     if (result) {
       setSuccessMessage('¡Libro subido exitosamente!');
-      setFormData({ title: '', author: '', genre: '', status: 'nuevo', price: 0, cover: '', description: '' });
+      setFormData({ title: '', author: '', genre: '', status: 'nuevo', city: '', disponible: true, price: 0, cover: '', description: '' });
+      await refetch(); // Recargar catálogo
     }
   };
 

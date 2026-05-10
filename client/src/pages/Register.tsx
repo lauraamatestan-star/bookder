@@ -12,7 +12,7 @@ export function Register() {
     if (username && password) {
       // Guardar usuario y contraseña en localStorage
       localStorage.setItem('user', JSON.stringify({ username, password }));
-      navigate('/login');
+      navigate('/');
     } else {
       setError('Rellena todos los campos');
     }

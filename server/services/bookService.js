@@ -89,7 +89,7 @@ let books = [
   },
 ];
 
-let nextId = 4;
+let nextId = books.length > 0 ? Math.max(...books.map(b => Number(b.id) || 0)) + 1 : 1;
 
 export const bookService = {
   getAll: () => books,

@@ -24,13 +24,11 @@ export const getBookById = (req, res) => {
 
 export const createBook = (req, res) => {
   try {
-    const { title, author, price, cover, description } = req.body;
-    
-    if (!title || !author || !price) {
-      return res.status(400).json({ message: 'Title, author and price are required' });
+    const { title, author, genre, status, city, disponible, price, cover, description, bids } = req.body;
+    if (!title || !author || !price || !genre || !status || !city) {
+      return res.status(400).json({ message: 'Faltan campos obligatorios: title, author, price, genre, status, city' });
     }
-    
-    const newBook = bookService.create({ title, author, price, cover, description });
+    const newBook = bookService.create({ title, author, genre, status, city, disponible, price, cover, description, bids });
     res.status(201).json(newBook);
   } catch (error) {
     res.status(500).json({ message: 'Error creating book', error: error.message });

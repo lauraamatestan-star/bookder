@@ -47,19 +47,26 @@ export function BookCard({ book }: BookCardProps) {
     setBids(prev => [...prev, newBid]);
   };
 
+  const [imgError, setImgError] = useState(false);
+  const defaultCover = "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
       <div className="h-48 bg-gray-200 flex items-center justify-center relative">
-        {book.cover ? (
+        {book.cover && !imgError ? (
           <img
             src={book.cover}
             alt={book.title}
             className="h-full w-full object-cover transition-opacity duration-700 opacity-0"
             loading="lazy"
             onLoad={e => e.currentTarget.classList.add('opacity-100')}
+            onError={() => setImgError(true)}
           />
         ) : (
-          <span className="text-4xl">📖</span>
+          <img
+            src={defaultCover}
+            alt="Portada no disponible"
+            className="h-full w-full object-cover opacity-100"
+          />
         )}
         {/* Badge de estado */}
         <span

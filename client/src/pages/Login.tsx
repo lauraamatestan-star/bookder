@@ -23,7 +23,7 @@ export function Login() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     if (username === user.username && password === user.password) {
       setRole('normal');
-      navigate('/profile');
+      navigate('/');
     } else {
       setError('Usuario o contraseña incorrectos');
     }
