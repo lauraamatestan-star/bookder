@@ -1,7 +1,6 @@
 // filepath: client/src/hooks/useBooks.ts
 import { useState, useEffect, useCallback } from 'react';
 import type { Book, CreateBookRequest } from '../types';
-import { bookApi } from '../api/client';
 
 interface UseBooksReturn {
   books: Book[];
@@ -17,15 +16,40 @@ export function useBooks(): UseBooksReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Clave de localStorage
+  const STORAGE_KEY = 'books';
+
+  // Cargar libros desde localStorage o inicializar con algunos por defecto
   const fetchBooks = useCallback(async () => {
+    setLoading(true);
+    setError(null);
     try {
-      setLoading(true);
-      setError(null);
-      const data = await bookApi.getAll();
+      const stored = localStorage.getItem(STORAGE_KEY);
+      let data: Book[] = [];
+      if (stored) {
+        data = JSON.parse(stored);
+      } else {
+        // Libros por defecto
+        data = [
+          {
+            id: '1',
+            title: 'El Principito',
+            author: 'Antoine de Saint-Exupéry',
+            price: 15.99,
+            cover: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300',
+            description: 'Una historia poética sobre un pequeño príncipe que visita diferentes planetas.',
+            createdAt: new Date().toISOString(),
+            city: 'Madrid',
+            disponible: true,
+            genre: 'Novela',
+            status: 'nuevo',
+          },
+        ];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
       setBooks(data);
     } catch (err) {
-      setError('Error al cargar los libros. Por favor, intenta de nuevo.');
-      console.error('Error fetching books:', err);
+      setError('Error al cargar los libros.');
     } finally {
       setLoading(false);
     }
@@ -33,23 +57,32 @@ export function useBooks(): UseBooksReturn {
 
   const addBook = async (bookData: CreateBookRequest): Promise<Book | null> => {
     try {
-      const newBook = await bookApi.create(bookData);
-      setBooks(prev => [...prev, newBook]);
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const current: Book[] = stored ? JSON.parse(stored) : [];
+      const newBook: Book = {
+        ...bookData,
+        id: (current.length > 0 ? (parseInt(current[current.length - 1].id) + 1).toString() : '1'),
+        createdAt: new Date().toISOString(),
+      };
+      const updated = [...current, newBook];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      setBooks(updated);
       return newBook;
     } catch (err) {
       setError('Error al crear el libro.');
-      console.error('Error creating book:', err);
       return null;
     }
   };
 
   const deleteBook = async (id: string): Promise<void> => {
     try {
-      await bookApi.delete(id);
-      setBooks(prev => prev.filter(book => book.id !== id));
+      const stored = localStorage.getItem(STORAGE_KEY);
+      const current: Book[] = stored ? JSON.parse(stored) : [];
+      const updated = current.filter(book => book.id !== id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      setBooks(updated);
     } catch (err) {
       setError('Error al eliminar el libro.');
-      console.error('Error deleting book:', err);
     }
   };
 
